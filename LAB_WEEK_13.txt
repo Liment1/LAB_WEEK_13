@@ -1,0 +1,52 @@
+1. MVVM Importance and File Mapping
+Importance: MVVM (Model-View-ViewModel) separates the UI logic from the business logic. This separation allows for easier testing, better code organization, and ensures the app state survives configuration changes (like screen rotation) without losing data.
+
+File Representation:
+
+Model (Data & Logic): Represents the data and business logic.
+
+Files: Movie.kt (Data Class), MovieRepository (referenced in MainActivity.kt as (application as MovieApplication).movieRepository).
+
+View (UI): Represents the UI elements and observes the ViewModel.
+
+Files: MainActivity.kt, activity_main.xml, MovieAdapter.
+
+ViewModel (State Holder): Prepares data for the View and handles communication with the Repository.
+
+Files: MovieViewModel (referenced in MainActivity.kt via ViewModelProvider).
+
+2. Data Binding Efficiency
+Why it is more efficient: Data Binding eliminates the need for repetitive findViewById calls, which reduces boilerplate code and improves runtime performance by creating binding connections at compile time. It also allows for declarative logic directly in the XML layout files.
+
+Where it is used:
+
+activity_main.xml: The layout is wrapped in <layout> tags, and the viewModel variable is declared within the <data> block.
+
+MainActivity.kt: The usage of DataBindingUtil.setContentView and the assignment binding.viewModel = movieViewModel.
+
+3. Singleton Pattern Importance
+Why it is important: The Singleton pattern ensures that a class has only one instance and provides a global point of access to it. This is critical for expensive resources like database connections (Room) or network clients (Retrofit) to prevent memory leaks, reduce resource consumption, and ensure data consistency (preventing database locking conflicts).
+
+Where it is used:
+
+MovieApplication: Although the file was not uploaded, MainActivity.kt calls (application as MovieApplication).movieRepository, implying that the Repository or Database is initialized once in the Application class (a Singleton scope).
+
+4. Repository Pattern Importance
+Why it is important: The Repository acts as a mediator between the ViewModel and data sources (API or Database). It abstracts the data origin, meaning the ViewModel does not need to know if data comes from the network or local storage. This creates a "Single Source of Truth" and decouples the UI from data fetching logic.
+
+Where it is used:
+
+MovieRepository: Referenced in MainActivity.kt when creating the MovieViewModel factory (MovieViewModel(movieRepository)). This object is responsible for aggregating data operations.
+
+5. WorkManager and Alternatives
+WorkManager Purpose: WorkManager is used for deferrable, guaranteed background work (like syncing data) that must run even if the app closes or the device restarts.
+
+Alternatives for Refreshing Data:
+
+Foreground Service: For tasks that need immediate execution and user awareness (e.g., music playback).
+
+AlarmManager: For scheduling tasks at exact times (less battery-efficient than WorkManager).
+
+JobScheduler: The native API WorkManager uses on modern Android versions.
+
+Lifecycle-bound Coroutines: Fetching data directly in onCreate or onResume. This is simpler but only works while the app is open and active (as seen in the current MainActivity.kt implementation).
