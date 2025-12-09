@@ -69,7 +69,10 @@ dependencies {
     // If this project only uses Java source, use the Java annotationProcessor
     // No additional plugins are necessary
     annotationProcessor("androidx.room:room-compiler:$room_version")
-
+    val work_version = "2.11.0"
+    implementation("androidx.work:work-runtime:${work_version}")
+// Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:${work_version}")
 
     // --- Other Dependencies ---
     implementation(libs.androidx.recyclerview)
